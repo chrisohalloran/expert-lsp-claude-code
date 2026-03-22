@@ -9,5 +9,6 @@
   },
   "repository": "https://github.com/chrisohalloran/elixir-expert-lsp",
   "license": "MIT",
-  "keywords": ["elixir", "lsp", "code-intelligence", "expert", "beam", "phoenix", "liveview"]
+  "homepage": "https://expert-lsp.org",
+  "keywords": ["elixir", "lsp", "code-intelligence", "expert", "expert-lsp", "language-server", "beam", "phoenix", "liveview"]
 }

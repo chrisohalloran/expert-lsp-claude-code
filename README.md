@@ -23,28 +23,38 @@ A Claude Code plugin that connects [Expert LSP](https://expert-lsp.org) — the 
 | Formatting | Yes |
 | Execute commands | Yes |
 
-## Benchmarks (vs ElixirLS)
+## Performance Notes
 
-Tested against a real Elixir/Phoenix project (Rig, 8 lib files):
+Tested against an Elixir project (Rig, 8 lib files). Results are from a single project and may vary based on project size, hardware, and Expert version:
 
-| Metric | Expert LSP | ElixirLS |
+| Metric | Expert LSP | ElixirLS v0.30.0 |
 |--------|-----------|----------|
-| Project compile | 12s (513ms engine) | 30s |
-| Diagnostic latency | **1.0s** | No diagnostics |
-| Error detection | Caught `undefined function run/3` | Missed it |
+| Project compile | 12s | 30s |
+| Diagnostic latency | 1.0s | Did not return diagnostics in test window |
 | Incremental recompile | 58ms | N/A |
 
-Expert compiles 2.5x faster and actually catches errors that ElixirLS misses.
+In this test, Expert detected an `undefined function run/3` error within 1 second of saving. ElixirLS did not return diagnostics within the test window. Expert is in release candidate status; ElixirLS is more mature. Your results will vary.
 
 ## First Run
 
-On first use per project, Expert builds an analysis engine (~30s). This is cached at `~/Library/Caches/expert/` and subsequent starts take <1s. You can warm the cache by running `expert --stdio` in your project directory and waiting for it to finish.
+On first use, Expert builds an analysis engine (~30 seconds). This is a one-time cost cached at `~/Library/Caches/expert/`. Subsequent starts take under 1 second.
+
+To warm the cache before using in Claude Code:
+
+```bash
+cd your-project
+expert --stdio
+# Wait until you see "Engine initialized" in .expert/expert.log (~30s)
+# Then Ctrl+C
+```
+
+Each project also needs an initial compile on first open (~5-10s with warm engine). After that, incremental recompiles take milliseconds.
 
 ## Requirements
 
 - **Claude Code** v1.0.33+
 - **Expert LSP** v0.1.0-rc.6+ installed and in your `$PATH`
-- **Elixir** 1.15+ with OTP 26+
+- **Elixir** 1.15+ with OTP 26+ (check with `elixir --version`)
 
 ## Install the plugin
 
@@ -106,9 +116,10 @@ export PATH="$HOME/.local/bin:$PATH"
 
 | Extension | Language ID |
 |-----------|------------|
-| `.ex`     | elixir     |
-| `.exs`    | elixir     |
-| `.heex`   | elixir     |
+| `.ex`     | elixir       |
+| `.exs`    | elixir       |
+| `.heex`   | phoenix-heex |
+| `.leex`   | elixir       |
 
 ## How it works
 
@@ -132,15 +143,24 @@ claude plugin enable elixir-ls-lsp@claude-plugins-official
 The plugin uses sensible defaults:
 - Transport: stdio (`expert --stdio`)
 - Auto-restart on crash: up to 3 times
-- No additional initialization options required
+- Startup timeout: 60 seconds (accommodates first-run engine build)
+- Shutdown timeout: 5 seconds
 
 ## Troubleshooting
 
-**"Executable not found in $PATH"**: Install Expert using the instructions above and ensure `~/.local/bin` is in your PATH.
+**"Executable not found in $PATH"**: Install Expert using the instructions above and ensure `~/.local/bin` is in your PATH. Verify with `expert --version`.
 
-**Plugin not loading**: Run `/plugin` in Claude Code and check the Errors tab. If Expert crashes on startup, try the nightly build which may have fixes.
+**No diagnostics appearing**: Expert needs to build its engine on first run (~30s). Check the log at `.expert/expert.log` in your project directory for progress. Look for "Engine initialized" to confirm it's ready.
+
+**Plugin not loading**: Run `/plugin` in Claude Code and check the Errors tab. If Expert crashes on startup, try the nightly build which may have fixes:
+```bash
+gh release download nightly --pattern 'expert_darwin_arm64' --repo elixir-lang/expert --dir /tmp
+cp /tmp/expert_darwin_arm64 ~/.local/bin/expert && chmod +x ~/.local/bin/expert
+```
 
 **Conflicts with elixir-ls-lsp**: Disable one before enabling the other. Both configure an LSP for `.ex` files and may conflict.
+
+**Reporting issues**: Include your `expert --version`, `elixir --version`, and the contents of `.expert/expert.log` from your project directory.
 
 ## License
 

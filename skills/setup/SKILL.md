@@ -1,7 +1,6 @@
 ---
 name: setup
-description: Install the Expert LSP binary for the expert-lsp plugin
-disable-model-invocation: true
+description: Install the Expert LSP binary for the elixir-expert-lsp plugin
 ---
 
 # Install Expert LSP
