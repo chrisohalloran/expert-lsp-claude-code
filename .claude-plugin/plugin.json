@@ -4,7 +4,8 @@
   "description": "Elixir code intelligence via Expert LSP — the official unified Elixir language server. Gives Claude auto-diagnostics, go-to-definition, find-references, and type info for .ex, .exs, and .heex files.",
   "author": {
     "name": "Chris O'Halloran",
-    "url": "https://github.com/chrisohalloran"
+    "url": "https://github.com/chrisohalloran",
+    "github": "chrisohalloran"
   },
   "repository": "https://github.com/striking/expert-lsp-claude-code",
   "license": "MIT",
