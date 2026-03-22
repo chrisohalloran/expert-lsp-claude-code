@@ -1,5 +1,5 @@
 {
-  "name": "expert-lsp",
+  "name": "elixir-expert-lsp",
   "version": "0.1.0",
   "description": "Elixir code intelligence via Expert LSP — the official unified Elixir language server. Gives Claude auto-diagnostics, go-to-definition, find-references, and type info for .ex, .exs, and .heex files.",
   "author": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/chrisohalloran",
     "github": "chrisohalloran"
   },
-  "repository": "https://github.com/striking/expert-lsp-claude-code",
+  "repository": "https://github.com/chrisohalloran/elixir-expert-lsp",
   "license": "MIT",
   "keywords": ["elixir", "lsp", "code-intelligence", "expert", "beam", "phoenix", "liveview"]
 }

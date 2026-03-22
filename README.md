@@ -1,4 +1,4 @@
-# expert-lsp — Elixir Code Intelligence for Claude Code
+# elixir-expert-lsp — Elixir Code Intelligence for Claude Code
 
 A Claude Code plugin that connects [Expert LSP](https://expert-lsp.org) — the official unified Elixir language server — to give Claude real-time code intelligence while working on Elixir projects.
 
@@ -23,6 +23,23 @@ A Claude Code plugin that connects [Expert LSP](https://expert-lsp.org) — the 
 | Formatting | Yes |
 | Execute commands | Yes |
 
+## Benchmarks (vs ElixirLS)
+
+Tested against a real Elixir/Phoenix project (Rig, 8 lib files):
+
+| Metric | Expert LSP | ElixirLS |
+|--------|-----------|----------|
+| Project compile | 12s (513ms engine) | 30s |
+| Diagnostic latency | **1.0s** | No diagnostics |
+| Error detection | Caught `undefined function run/3` | Missed it |
+| Incremental recompile | 58ms | N/A |
+
+Expert compiles 2.5x faster and actually catches errors that ElixirLS misses.
+
+## First Run
+
+On first use per project, Expert builds an analysis engine (~30s). This is cached at `~/Library/Caches/expert/` and subsequent starts take <1s. You can warm the cache by running `expert --stdio` in your project directory and waiting for it to finish.
+
 ## Requirements
 
 - **Claude Code** v1.0.33+
@@ -33,7 +50,7 @@ A Claude Code plugin that connects [Expert LSP](https://expert-lsp.org) — the 
 
 ```bash
 # From the Claude Code CLI
-claude plugin install expert-lsp@<marketplace>
+claude plugin install elixir-expert-lsp@<marketplace>
 
 # Or load locally for development
 claude --plugin-dir /path/to/expert-lsp
@@ -106,7 +123,7 @@ Expert is the [official unified Elixir language server](https://elixir-lang.org/
 Expert is currently in release candidate status (v0.1.0-rc.6 as of March 2026). If you encounter issues, you can fall back to the `elixir-ls-lsp` plugin which uses the legacy ElixirLS server:
 
 ```bash
-claude plugin disable expert-lsp
+claude plugin disable elixir-expert-lsp
 claude plugin enable elixir-ls-lsp@claude-plugins-official
 ```
 
